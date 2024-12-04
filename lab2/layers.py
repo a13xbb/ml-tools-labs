@@ -16,7 +16,7 @@ class Linear:
         grad_W = np.dot(self.input.T, grad_out)
         grad_bias = np.sum(grad_out, axis = 0, keepdims=True)
 
-        self.dx = grad_input
+        self.dX = grad_input
         self.dW = grad_W
         self.db = grad_bias
         
@@ -35,7 +35,8 @@ class ReLu:
         return np.maximum(x, 0)
     
     def backward(self, out_grad):
-        return out_grad * (self.input > 0)
+        self.dX = out_grad * (self.input > 0)
+        return self.dX
     
     
 class Softmax:
@@ -60,4 +61,4 @@ class MSELoss:
         return np.mean((pred - gt)**2)
     
     def backward(self):
-        return 2 * (self.pred - self.gt) / self.pred.shape[0]
+        return 2 * (self.pred - self.gt) / self.pred.size
