@@ -11,10 +11,14 @@ class Linear:
         self.input = x
         return np.dot(x, self.W) + self.bias
     
-    def backward(self, grad_out, lr):
+    def backward(self, grad_out, lr=0.01):
         grad_input = np.dot(grad_out, self.W.T)
         grad_W = np.dot(self.input.T, grad_out)
         grad_bias = np.sum(grad_out, axis = 0, keepdims=True)
+
+        self.dx = grad_input
+        self.dW = grad_W
+        self.db = grad_bias
         
         self.W -= lr * grad_W
         self.bias -= lr * grad_bias
