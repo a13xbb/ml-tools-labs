@@ -45,9 +45,19 @@ class Softmax:
     
     def forward(self, x):
         exps = np.exp(x)
-        return exps / np.sum(exps, axis=1, keepdims=True)
+        self.output = exps / np.sum(exps, axis=1, keepdims=True)
+        return self.output
     
-    def backward(seld, out_grad):
+    def backward_(self, dL):
+        batch_size, num_classes = self.output.shape
+        jacobian = np.zeros((batch_size, num_classes, num_classes))
+        
+        for i in range(batch_size):
+            y = self.output[i].reshape(-1, 1)
+            jacobian[i] = np.diagflat(y) - np.dot(y, y.T)
+        return np.einsum('bij,bj->bi', jacobian, dL)
+    
+    def backward(self, out_grad):
         return out_grad
 
 
